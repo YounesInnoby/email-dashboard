@@ -6,8 +6,11 @@ import fitz
 import io
 from openai import OpenAI
 from io import BytesIO
-from schemas import schema
+from schemas import schema, schema_PT
 import json
+from pdf2image import convert_from_bytes
+import tempfile
+import base64
 
 
 
@@ -138,22 +141,45 @@ def get_emails():
                             pdf_text = extract_text_from_pdf(pdf_attachment)  # 🆕 PDF-Text extrahieren
                             #pdf_text = "\n\n".join(extract_text_blocks_from_pdf(pdf_attachment))
 
-                            completion = client.chat.completions.create(
-                                model=llm,
-                                messages=[
-                                    {"role": "system", "content": """Für den folgenden Text müssen alle aufgeführten Positionen einzeln extrahiert werden mit den zugehörig definierten Attributen im angelieferten JSON Format. 
-                                    Orientiere dich bei der Antwort hauptsächlich am vorgegebenen Text und extrahiere Informationen nur, wenn du dir auch wirklich sicher bist."""
-                                    },
-                                    {
-                                       "role": "user",
-                                        "content": pdf_text
-                                    }
-                                ],
-                                response_format=schema,
-                            )
-                            response = completion.choices[0].message.content
+                            # Konvertiere PDF in PNG (erste Seite)
+                            pdf_bytes = base64.b64decode(pdf_attachment)
+                            images = convert_from_bytes(pdf_bytes, dpi=300)
 
-            response = json.loads(response)
+                            with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_img:
+                                images[0].save(tmp_img.name, format='PNG')
+                                tmp_img_path = tmp_img.name
+
+                            # PNG in base64 kodieren
+                            with open(tmp_img_path, "rb") as image_file:
+                                encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+                            # GPT-4o Vision-Anfrage
+                            vision_completion = client.chat.completions.create(
+                                model="gpt-4o",
+                                messages=[
+                                    {"role": "system", "content": "Du bist ein KI-Assistent für technische Zeichnungen."},
+                                    {"role": "user", "content": [
+                                        {
+                                            "type": "image_url",
+                                            "image_url": {
+                                                "url": f"data:image/png;base64,{encoded_image}",
+                                                "detail": "high"
+                                            }
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Ermittle mir aus angehangener technischen Zeichnung alle Maßangaben und Merkmale aus dem Response Format"
+                                        }
+                                    ]}
+                                ],
+                                response_format=schema_PT,  # Verwende dein Zeichnungs-Schema
+                                max_tokens=500,
+                                temperature=0
+                            )
+
+                            response = json.loads(vision_completion.choices[0].message.content)
+
+            #response = json.loads(response)
             search_terms = [str(v).strip().lower() for v in extract_non_empty_values(response)]
             all_words = extract_text_with_positions(pdf_attachment)
             highlight_fields = filter_words_if_in_target_texts(all_words, search_terms)
@@ -174,6 +200,7 @@ def get_emails():
         return email_list
 
     except Exception as e:
+        print(f"Fehler beim Abrufen der E-Mails: {str(e)}")
         return {"error": str(e)}
 
 

@@ -209,3 +209,103 @@ schema = {
         "strict": True
     }
 }
+
+
+schema_PT = {
+    "type": "json_schema",
+    "json_schema":
+    {
+        "name": "order_schema",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Bestellung-Nr": {
+                    "type": "string",
+                    "description": "The number/ID of the order."
+                },
+                "Datum": {
+                    "type": "string",
+                    "description": "The date of the order."
+                },
+                "Projekt/Kommissions-Nr": {
+                    "type": "string",
+                    "description": "The project or commission number of the order."
+                },
+                "Positionen": {
+                    "type": "array",
+                    "description": "List of items in the order.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+
+                            "Position": {
+                                "type": "number",
+                                "description": "The position number of the item."
+                            },
+                            "Menge": {
+                                "type": "number",
+                                "description": "The quantity of the item."
+                            },
+                            "Artikel": {
+                                "type": "string",
+                                "description": "The name of the item.",
+                            },
+                            "Laenge": {
+                                "type": "number",
+                                "description": "The length of the item , which is described in the size description."
+                            },
+                            "Breite": {
+                                "type": "number",
+                                "description": "The width of the item , which is described in the size description."
+                            },
+                            "Höhe": {
+                                "type": "number",
+                                "description": "The height of the item."
+                            },
+                            "Material": {
+                                "type": "string",
+                                "description": "The material of the item, which is described. This could be described like 'Vierkant-Stahl' or something similar or described as a material Code."
+                            },
+                            "Norm": {
+                                "type": "string",
+                                "description": "The normed standard demanded for the product. These could be international, european or german standards, which usually are indicated by DIN, EN or ASME at the beginning."
+                            },
+                            "Zeugnis": {
+                                "type": "string",
+                                "description": "The certificate required to the item. This could be for example WZ 3.1 or similar.",
+
+                            },
+                            "Oberfläche": {
+                                "type": "string",
+                                "description": "This describes the surface quality of the item.",
+
+                            }
+                        },
+                        "required": [
+
+                            "Position",
+                            "Menge",
+                            "Artikel",
+                            "Laenge",
+                            "Breite",
+                            "Höhe",
+                            "Material",
+                            "Norm",
+                            "Zeugnis",
+                            "Oberfläche"
+                        ],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": [
+                "Bestellung-Nr",
+                "Datum",
+                "Projekt/Kommissions-Nr",
+                "Positionen"
+            ],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+}
