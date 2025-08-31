@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from email_service import get_emails
 
+
 app = FastAPI()
 
 # Pfad zu ./build neben main.py
