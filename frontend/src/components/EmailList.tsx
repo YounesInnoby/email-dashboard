@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Mail, User, Clock } from "lucide-react";
 
 export interface EmailBase {
@@ -9,8 +9,10 @@ export interface EmailBase {
   pdf_attachment?: string;
   pdf_text?: string;
   timestamp?: string;
-  status?: "unbearbeitet" | "in_bearbeitung" | "bearbeitet";
+  status?: "unbearbeitet" | "in_bearbeitung" | "bearbeitet" | "action_required";
 }
+
+export type StatusTab = "inbox" | "bearbeitet" | "in_bearbeitung" | "action_required";
 
 export interface EmailWithResponse extends EmailBase {
   response?: {
@@ -23,10 +25,19 @@ export interface EmailWithResponse extends EmailBase {
 interface Props {
   onSelectEmail: (email: EmailWithResponse | null) => void;
   emails: EmailWithResponse[];
+  activeTab: StatusTab;
 }
 
-const EmailList: React.FC<Props> = ({ onSelectEmail, emails }) => {
+const EmailList: React.FC<Props> = ({ onSelectEmail, emails, activeTab }) => {
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+
+  const filteredEmails = useMemo(() => {
+    if (activeTab === "inbox") {
+      // "inbox" zeigt alle unbearbeiteten Mails
+      return emails.filter((e) => !e.status || e.status === "unbearbeitet");
+    }
+    return emails.filter((e) => e.status === activeTab);
+  }, [emails, activeTab]);
 
   return (
     <div className="w-80 bg-white shadow-lg h-screen overflow-y-auto p-4 border-r">
@@ -34,11 +45,11 @@ const EmailList: React.FC<Props> = ({ onSelectEmail, emails }) => {
         <Mail className="h-6 w-6 mr-2 text-gray-600" /> Eingang
       </h2>
 
-      {emails.length === 0 ? (
+      {filteredEmails.length === 0 ? (
         <p className="text-gray-600">Keine E-Mails gefunden</p>
       ) : (
         <div className="space-y-2">
-          {emails.map((email) => (
+          {filteredEmails.map((email) => (
             <div
               key={email.id}
               onClick={() => {
@@ -69,7 +80,9 @@ const EmailList: React.FC<Props> = ({ onSelectEmail, emails }) => {
                       ? "bg-green-100 text-green-800"
                       : email.status === "in_bearbeitung"
                       ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
+                      : email.status === "action_required"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-gray-100 text-gray-800"
                   }`}
                 >
                   {email.status || "unbearbeitet"}

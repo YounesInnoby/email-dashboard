@@ -242,9 +242,13 @@ schema_PT = {
                                 "type": "number",
                                 "description": "The position number of the item."
                             },
-                            "Menge": {
+                            "Masse": {
                                 "type": "number",
-                                "description": "The quantity of the item."
+                                "description": "The mass of the item, described in kg. If not provided, keep this blank or 0.0."
+                            },
+                            "Stück": {
+                                "type": "number",
+                                "description": "The quantity of the item. If not provided, keep this blank or 0.0. If its only written in text as 'eine', 'zwei' and so on, please set the quantity accordingly."
                             },
                             "Artikel": {
                                 "type": "string",
@@ -252,23 +256,23 @@ schema_PT = {
                             },
                             "Laenge": {
                                 "type": "number",
-                                "description": "The length of the item , which is described in the size description."
+                                "description": "The length of the item , which is described in the size description. If 3 sizes are available it has to be interpreted like 'length x width x height'."
                             },
                             "Breite": {
                                 "type": "number",
-                                "description": "The width of the item , which is described in the size description."
+                                "description": "The width of the item , which is described in the size description. If 3 sizes are available, width is always the medium one. 'VK' stands for 'Vierkant' and means, that the provided size after is the width and height at the same time. 'FL' stands for 'Flach' and means, that the provided sizes after describe the width and height of the item.If 3 sizes are available it has to be interpreted like 'length x width x height'."
                             },
                             "Höhe": {
                                 "type": "number",
-                                "description": "The height of the item."
+                                "description": "The height of the item, which is described in the size description. If 3 sizes are available, height is always the smallest one. 'VK' stands for 'Vierkant' and means, that the provided size after is the width and height at the same time. 'FL' stands for 'Flach' and means, that the provided sizes after describe the width and height of the item.If 3 sizes are available it has to be interpreted like 'length x width x height'."
                             },
                             "Material": {
                                 "type": "string",
-                                "description": "The material of the item, which is described. This could be described like 'Vierkant-Stahl' or something similar or described as a material Code."
+                                "description": "The material of the item, which is described. This has to be described in a EN normed format. The following dictionary describes all possible options. If only the Code in the keys is provided, this has to be mapped to the correct value. Otherwise, if one of the values is provided, this will be the correct material. "
                             },
                             "Norm": {
                                 "type": "string",
-                                "description": "The normed standard demanded for the product. These could be international, european or german standards, which usually are indicated by DIN, EN or ASME at the beginning."
+                                "description": "The normed standard demanded for the product. These could be international, european or german standards, which usually are indicated by DIN, EN or ASME at the beginning followed by a numeric Code like 'DIN/EN 12345'."
                             },
                             "Zeugnis": {
                                 "type": "string",
@@ -284,7 +288,8 @@ schema_PT = {
                         "required": [
 
                             "Position",
-                            "Menge",
+                            "Masse",
+                            "Stück",
                             "Artikel",
                             "Laenge",
                             "Breite",
@@ -307,5 +312,969 @@ schema_PT = {
             "additionalProperties": False
         },
         "strict": True
+    }
+}
+
+
+
+schema_Joke = {
+    "type": "json_schema",
+    "json_schema":
+    {
+        "name": "order_schema",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Dokumententyp": {
+                    "type": "string",
+                    "enum" : ["Rechnung", "Bestellung", "Bestellbestätigung", ""],
+                    "description": "The type of the provided document."
+                },
+                "Rechnungsnummer": {
+                    "type": "string",
+                    "description": "Invoice number, if the document type is an invoice or if the document provides an invoice number."
+                },
+                "Bestellnummer": {
+                    "type": "string",
+                    "description": "Order number, if the document type is a order or if the document provides an order number."
+                },
+                "Auftragsnummer": {
+                    "type": "string",
+                    "description": "Job number, if the document type is an order or order confirmation or if the document provides a job number."
+                },
+                "Datum": {
+                    "type": "string",
+                    "description": "The document date."
+                },
+                "Kundennummer": {
+                    "type": "string",
+                    "description": "the client number or client ID."
+                },
+                "Ansprechpartner": {
+                    "type": "string",
+                    "description": "The contact person provided in the document."
+                },
+                "Lieferant": {
+                    "type": "string",
+                    "description": "The name of the delivering company."
+                },
+                "Lieferantennummer": {
+                    "type": "string",
+                    "description": "The number/ID of the delivering company."
+                },
+                "Lieferadresse" : {
+                    "type": "string",
+                    "description": "The delivery address of the client."
+                },
+                "Versandadresse" : {
+                    "type": "string",
+                    "description": "The shipping address of the client."
+                },
+                "Positionen": {
+                    "type": "array",
+                    "description": "List of items in the order.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+
+                            "Position": {
+                                "type": "string",
+                                "description": "The position number of the item."
+                            },
+                            "Artikelnummer": {
+                                "type": "string",
+                                "description": "The article number of the item."
+                            },
+                            "Artikelbezeichnung": {
+                                "type": "string",
+                                "description": "The name of the item and the underlying description."
+                            },
+                            "Referenznummer": {
+                                "type": "string",
+                                "description": "The reference number of the item."
+                            },
+                            "Kundenartikelnummer": {
+                                "type": "string",
+                                "description": "The customer article number of the item."
+                            },
+                            "Verpackungseinheit Stück": {
+                                "type": "number",
+                                "description": "the number of items per packaging unit."
+                            },
+                            "Stück": {
+                                "type": "number",
+                                "description": "The quanitity of items or packaging units."
+                            },
+                            "Lieferdatum": {
+                                "type": "string",
+                                "description": "The delivery date of the item.",
+                            },
+                            "Einzelpreis": {
+                                "type": "number",
+                                "description": "The single price per item."
+                            },
+                            "Positionspreis": {
+                                "type": "number",
+                                "description": "The aggregated price per position for all items."
+                            },
+                            "Artikeldurchmesser": {
+                                "type": "number",
+                                "description": "The diameter of the item , which is described in the size description."
+                            },
+                            "Artikelbreite": {
+                                "type": "number",
+                                "description": "The width of the item , which is described in the size description."
+                            },
+                            "Artikellänge": {
+                                "type": "number",
+                                "description": "The length of the item , which is described in the size description."
+                            },
+                            "Artikelhöhe": {
+                                "type": "number",
+                                "description": "The height of the item, which is described in the size description."
+                            }
+                        },
+                        "required": [
+
+                            "Position",
+                            "Artikelnummer",
+                            "Artikelbezeichnung",
+                            "Stück",
+                            "Einzelpreis",
+                            "Positionspreis"
+                        ],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": [
+                "Dokumententyp",
+                "Datum",
+                "Positionen"
+            ],
+            "additionalProperties": False
+        },
+        "strict": False
+    }
+}
+
+schema_Joke2 = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "order_schema",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Dokumententyp": {
+                    "type": "object",
+                    "description": "The type of the provided document.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": ["Rechnung", "Bestellung", "Bestellbestätigung", ""],
+                            "description": "The type of the provided document."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score between 0 (uncertain) and 1 (very certain) for this attribute."
+                        }
+                    },
+                    "required": ["value", "confidence"]
+                },
+                "Rechnungsnummer": {
+                    "type": "object",
+                    "description": "Invoice number, if the document type is an invoice or if the document provides an invoice number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Invoice number, if the document type is an invoice or if the document provides an invoice number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Rechnungsnummer."
+                        }
+                    }
+                },
+                "Bestellnummer": {
+                    "type": "object",
+                    "description": "Order number, if the document type is a order or if the document provides an order number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Order number, if the document type is a order or if the document provides an order number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Bestellnummer."
+                        }
+                    }
+                },
+                "Auftragsnummer": {
+                    "type": "object",
+                    "description": "Job number, if the document type is an order or order confirmation or if the document provides a job number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Job number, if the document type is an order or order confirmation or if the document provides a job number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Auftragsnummer."
+                        }
+                    }
+                },
+                "Datum": {
+                    "type": "object",
+                    "description": "The document date.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The document date."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Datum."
+                        }
+                    }
+                },
+                "Kundennummer": {
+                    "type": "object",
+                    "description": "the client number or client ID.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "the client number or client ID."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Kundennummer."
+                        }
+                    }
+                },
+                "Ansprechpartner": {
+                    "type": "object",
+                    "description": "The contact person provided in the document.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The contact person provided in the document."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Ansprechpartner."
+                        }
+                    }
+                },
+                "Lieferant": {
+                    "type": "object",
+                    "description": "The name of the delivering company.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The name of the delivering company."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferant."
+                        }
+                    }
+                },
+                "Lieferantennummer": {
+                    "type": "object",
+                    "description": "The number/ID of the delivering company.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The number/ID of the delivering company."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferantennummer."
+                        }
+                    }
+                },
+                "Lieferadresse": {
+                    "type": "object",
+                    "description": "The delivery address of the client.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The delivery address of the client."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferadresse."
+                        }
+                    }
+                },
+                "Versandadresse": {
+                    "type": "object",
+                    "description": "The shipping address of the client.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The shipping address of the client."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Versandadresse."
+                        }
+                    }
+                },
+                "Positionen": {
+                    "type": "array",
+                    "description": "List of items in the order.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Position": {
+                                "type": "object",
+                                "description": "The position number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The position number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Position."
+                                    }
+                                }
+                            },
+                            "Artikelnummer": {
+                                "type": "object",
+                                "description": "The article number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The article number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelnummer."
+                                    }
+                                }
+                            },
+                            "Artikelbezeichnung": {
+                                "type": "object",
+                                "description": "The name of the item and the underlying description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The name of the item and the underlying description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelbezeichnung."
+                                    }
+                                }
+                            },
+                            "Referenznummer": {
+                                "type": "object",
+                                "description": "The reference number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The reference number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Referenznummer."
+                                    }
+                                }
+                            },
+                            "Kundenartikelnummer": {
+                                "type": "object",
+                                "description": "The customer article number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The customer article number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Kundenartikelnummer."
+                                    }
+                                }
+                            },
+                            "Verpackungseinheit Stück": {
+                                "type": "object",
+                                "description": "the number of items per packaging unit.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "the number of items per packaging unit."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Verpackungseinheit Stück."
+                                    }
+                                }
+                            },
+                            "Stück": {
+                                "type": "object",
+                                "description": "The quanitity of items or packaging units.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The quanitity of items or packaging units."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Stück."
+                                    }
+                                }
+                            },
+                            "Lieferdatum": {
+                                "type": "object",
+                                "description": "The delivery date of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The delivery date of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Lieferdatum."
+                                    }
+                                }
+                            },
+                            "Einzelpreis": {
+                                "type": "object",
+                                "description": "The single price per item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The single price per item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Einzelpreis."
+                                    }
+                                }
+                            },
+                            "Positionspreis": {
+                                "type": "object",
+                                "description": "The aggregated price per position for all items.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The aggregated price per position for all items."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Positionspreis."
+                                    }
+                                }
+                            },
+                            "Artikeldurchmesser": {
+                                "type": "object",
+                                "description": "The diameter of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The diameter of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikeldurchmesser."
+                                    }
+                                }
+                            },
+                            "Artikelbreite": {
+                                "type": "object",
+                                "description": "The width of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The width of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelbreite."
+                                    }
+                                }
+                            },
+                            "Artikellänge": {
+                                "type": "object",
+                                "description": "The length of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The length of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikellänge."
+                                    }
+                                }
+                            },
+                            "Artikelhöhe": {
+                                "type": "object",
+                                "description": "The height of the item, which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The height of the item, which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelhöhe."
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "Position",
+                            "Artikelnummer",
+                            "Artikelbezeichnung",
+                            "Stück",
+                            "Einzelpreis",
+                            "Positionspreis"
+                        ],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": [
+                "Dokumententyp",
+                "Datum",
+                "Positionen"
+            ],
+            "additionalProperties": False
+        },
+        "strict": False
+    }
+}
+
+
+schema_Fischer = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "order_schema",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Dokumententyp": {
+                    "type": "object",
+                    "description": "The type of the provided document.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": ["Rechnung", "Bestellung", "Bestellbestätigung", "Kundenanfrage", ""],
+                            "description": "The type of the provided document."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score between 0 (uncertain) and 1 (very certain) for this attribute."
+                        }
+                    },
+                    "required": ["value", "confidence"]
+                },
+                "Kundename" : {
+                    "type": "object",
+                    "description": "name of the client who the document was created from.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "name of the client who the document was created from.",
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Kundenname."
+                        }
+                    }
+                },
+                "Anfragenummer" : {
+                    "type": "object",
+                    "description": "document number, if the document is of type 'Anfrager'.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "document number, if the document is of type 'Anfrager'.",
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Anfragenummer."
+                        }
+                    }
+                },
+                "Rechnungsnummer": {
+                    "type": "object",
+                    "description": "Invoice number, if the document type is an invoice or if the document provides an invoice number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Invoice number, if the document type is an invoice or if the document provides an invoice number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Rechnungsnummer."
+                        }
+                    }
+                },
+                "Bestellnummer": {
+                    "type": "object",
+                    "description": "Order number, if the document type is a order or if the document provides an order number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Order number, if the document type is a order or if the document provides an order number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Bestellnummer."
+                        }
+                    }
+                },
+                "Auftragsnummer": {
+                    "type": "object",
+                    "description": "Job number, if the document type is an order or order confirmation or if the document provides a job number.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "Job number, if the document type is an order or order confirmation or if the document provides a job number."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Auftragsnummer."
+                        }
+                    }
+                },
+                "Datum": {
+                    "type": "object",
+                    "description": "The document date.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The document date."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Datum."
+                        }
+                    }
+                },
+                "Kundennummer": {
+                    "type": "object",
+                    "description": "the client number or client ID.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "the client number or client ID."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Kundennummer."
+                        }
+                    }
+                },
+                "Ansprechpartner": {
+                    "type": "object",
+                    "description": "The contact person provided in the document.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The contact person provided in the document."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Ansprechpartner."
+                        }
+                    }
+                },
+                "Lieferant": {
+                    "type": "object",
+                    "description": "The name of the delivering company.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The name of the delivering company."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferant."
+                        }
+                    }
+                },
+                "Lieferantennummer": {
+                    "type": "object",
+                    "description": "The number/ID of the delivering company.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The number/ID of the delivering company."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferantennummer."
+                        }
+                    }
+                },
+                "Lieferadresse": {
+                    "type": "object",
+                    "description": "The delivery address of the client.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The delivery address of the client."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Lieferadresse."
+                        }
+                    }
+                },
+                "Versandadresse": {
+                    "type": "object",
+                    "description": "The shipping address of the client.",
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "description": "The shipping address of the client."
+                        },
+                        "confidence": {
+                            "type": "number",
+                            "description": "Confidence score for Versandadresse."
+                        }
+                    }
+                },
+                "Positionen": {
+                    "type": "array",
+                    "description": "List of items in the order.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Position": {
+                                "type": "object",
+                                "description": "The position number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The position number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Position."
+                                    }
+                                }
+                            },
+                            "Artikelnummer": {
+                                "type": "object",
+                                "description": "The article number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The article number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelnummer."
+                                    }
+                                }
+                            },
+                            "Artikelbezeichnung": {
+                                "type": "object",
+                                "description": "The name of the item and the underlying description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The name of the item and the underlying description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelbezeichnung."
+                                    }
+                                }
+                            },
+                            "Referenznummer": {
+                                "type": "object",
+                                "description": "The reference number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The reference number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Referenznummer."
+                                    }
+                                }
+                            },
+                            "Kundenartikelnummer": {
+                                "type": "object",
+                                "description": "The customer article number of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The customer article number of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Kundenartikelnummer."
+                                    }
+                                }
+                            },
+                            "Verpackungseinheit Stück": {
+                                "type": "object",
+                                "description": "the number of items per packaging unit.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "the number of items per packaging unit."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Verpackungseinheit Stück."
+                                    }
+                                }
+                            },
+                            "Stück": {
+                                "type": "object",
+                                "description": "The quanitity of items or packaging units.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The quanitity of items or packaging units."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Stück."
+                                    }
+                                }
+                            },
+                            "Lieferdatum": {
+                                "type": "object",
+                                "description": "The delivery date of the item.",
+                                "properties": {
+                                    "value": {
+                                        "type": "string",
+                                        "description": "The delivery date of the item."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Lieferdatum."
+                                    }
+                                }
+                            },
+                            "Einzelpreis pro Einheit": {
+                                "type": "object",
+                                "description": "The single price per unit.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The single price per unit."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Einzelpreis pro Einheit."
+                                    }
+                                }
+                            },
+                            "Menge pro Einheit": {
+                                "type": "object",
+                                "description": "quantity of items per unit, which 'Einzelpreis pro Einheit' is calculated on.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "quantity of items per unit, which 'Einzelpreis pro Einheit' is calculated on."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Menge pro Einheit."
+                                    }
+                                }
+                            },
+                            "Positionspreis": {
+                                "type": "object",
+                                "description": "The aggregated price per position for all items.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The aggregated price per position for all items."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Positionspreis."
+                                    }
+                                }
+                            },
+                            "Artikeldurchmesser": {
+                                "type": "object",
+                                "description": "The diameter of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The diameter of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikeldurchmesser."
+                                    }
+                                }
+                            },
+                            "Artikelbreite": {
+                                "type": "object",
+                                "description": "The width of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The width of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelbreite."
+                                    }
+                                }
+                            },
+                            "Artikellänge": {
+                                "type": "object",
+                                "description": "The length of the item , which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The length of the item , which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikellänge."
+                                    }
+                                }
+                            },
+                            "Artikelhöhe": {
+                                "type": "object",
+                                "description": "The height of the item, which is described in the size description.",
+                                "properties": {
+                                    "value": {
+                                        "type": "number",
+                                        "description": "The height of the item, which is described in the size description."
+                                    },
+                                    "confidence": {
+                                        "type": "number",
+                                        "description": "Confidence score for Artikelhöhe."
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "Position",
+                            "Artikelnummer",
+                            "Artikelbezeichnung",
+                            "Stück",
+                            "Einzelpreis",
+                            "Positionspreis"
+                        ],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": [
+                "Dokumententyp",
+                "Datum",
+                "Positionen"
+            ],
+            "additionalProperties": False
+        },
+        "strict": False
     }
 }
