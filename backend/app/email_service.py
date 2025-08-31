@@ -30,7 +30,6 @@ IMAP_SERVER = "mx.freenet.de"
 EMAIL_ACCOUNT = "rostfrei_demo@freenet.de"
 EMAIL_PASSWORD = "RostfreiStahl1!"
 llm = "gpt-4o"
-client = OpenAI(api_key='SK_REDACTED')
 #openai_api_key = "SK_REDACTED"
 
 #Kunden = pd.read_pickle("./samples/Kunden WHG.pkl")
