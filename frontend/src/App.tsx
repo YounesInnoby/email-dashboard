@@ -78,7 +78,7 @@ function AppShell() {
   useEffect(() => {
     const fetchEmails = async () => {
       try {
-        const res = await fetch("http://localhost:8001/emails", {
+        const res = await fetch(`${process.env.PUBLIC_URL}/emails`, {
           headers: {
             // Falls Backend Auth braucht:
             // Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -120,6 +120,7 @@ function AppShell() {
     if (statusTab === "inbox") return filteredByCategory;
     return filteredByCategory.filter((m) => m.status === statusTab);
   }, [filteredByCategory, statusTab]);
+  const API_BASE = process.env.REACT_APP_API_BASE || window.location.origin;
 
   return (
     <div className="flex h-screen bg-gray-50">
