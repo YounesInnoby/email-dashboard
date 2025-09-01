@@ -15,10 +15,10 @@ app = FastAPI()
 FRONTEND_DIR = Path(__file__).parent / "build"
 
 # Statische Dateien unter /app servieren
-app.mount("/app", StaticFiles(directory=FRONTEND_DIR, html=True), name="app")
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="app")
 
 # SPA-Fallback: alle unbekannten Pfade unter /app -> index.html
-@app.get("/app/{path:path}")
+@app.get("/{path:path}")
 def spa_catch_all(path: str):
   index = FRONTEND_DIR / "index.html"
   return FileResponse(index)

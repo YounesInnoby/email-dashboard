@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography, Paper, Container, CircularProgress } from "@mui/material";
 import { GlobalMenuContext } from "../context/GlobalMenuContext";
 
-const API_BASE =  "http://localhost:8001";
+// API-Basis: gleicher Host/Port wie die ausgelieferte App
+const API_BASE = process.env.REACT_APP_API_BASE || window.location.origin;
+// Beispiel: http://localhost:8001
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -32,7 +34,7 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem("token", data.token ?? "dummy");
         localStorage.setItem("role", data.role ?? "user");
-        navigate("/");
+        navigate("/"); // Router-Basename kümmert sich um /app
       } else {
         setError(data.detail || data.message || "Login fehlgeschlagen");
       }
@@ -46,7 +48,12 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 10, textAlign: "center" }}>
-        <img src={`${API_BASE}/Innoby_claim.png`} alt="Logo" />
+        {/* Bild IMMER über PUBLIC_URL laden (passt sich an /app an) */}
+        <img
+          src={`${process.env.PUBLIC_URL}/Innoby_claim.png`}
+          alt="Logo"
+          style={{ maxWidth: 150, marginBottom: 16 }}
+        />
         <Typography variant="h5" gutterBottom>Login</Typography>
         {error && <Typography color="error">{error}</Typography>}
         <Box sx={{ mt: 2 }}>
