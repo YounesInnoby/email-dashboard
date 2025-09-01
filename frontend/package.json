@@ -56,7 +56,7 @@
     "postcss": "^8.5.3"
   },
 
-  "homepage": "/app",
+  "homepage": "/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
