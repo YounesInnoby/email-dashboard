@@ -19,7 +19,7 @@ export default function Sidebar({ active, counts, onChange }: Props) {
     <aside className="w-64 bg-white border-r h-screen flex flex-col">
       {/* Top-Bereich (Logo und Tabs) */}
       <div className="p-4 flex-shrink-0">
-        <img src={`${process.env.PUBLIC_URL}/Innoby_claim.png`} alt="Logo" />
+        <img src={`/Innoby_claim.png`} alt="Logo" />
       </div>
 
       <div className="text-xs uppercase tracking-wider text-gray-400 mb-3 px-4">

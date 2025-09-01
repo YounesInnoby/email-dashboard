@@ -46,7 +46,7 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 10, textAlign: "center" }}>
-        <img src={`${process.env.PUBLIC_URL}/Innoby_claim.png`} alt="Logo" />
+        <img src={`${API_BASE}/Innoby_claim.png`} alt="Logo" />
         <Typography variant="h5" gutterBottom>Login</Typography>
         {error && <Typography color="error">{error}</Typography>}
         <Box sx={{ mt: 2 }}>
