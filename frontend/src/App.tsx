@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import FileItem from "./components/FileItem";
 import DetailModal from "./components/DetailModal";
@@ -12,7 +12,6 @@ import { GlobalMenuProvider } from "./context/GlobalMenuContext";
 
 // --- Kategorien-Tabs (Sidebar)
 type TabKey = "client-request" | "order" | "invoice";
-
 // --- Status-Tabs (TopBar)
 type StatusTab = "inbox" | "bearbeitet" | "in_bearbeitung" | "action_required";
 
@@ -58,9 +57,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const location = useLocation();
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
+  if (!token) return <Navigate to="/login" replace state={{ from: location }} />;
   return <>{children}</>;
 }
 
@@ -75,13 +72,10 @@ function AppShell() {
   const [statusTab, setStatusTab] = useState<StatusTab>("inbox");
 
   useEffect(() => {
-    const fetchEmails = async () => {
+    (async () => {
       try {
-        const res = await fetch("http://localhost:8001/emails", {
-          headers: {
-            // Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        });
+        // relative URL -> funktioniert lokal, per Domain und via ngrok
+        const res = await fetch("/emails");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setEmails(data as EmailWithResponse[]);
@@ -90,8 +84,7 @@ function AppShell() {
       } finally {
         setLoading(false);
       }
-    };
-    fetchEmails();
+    })();
   }, []);
 
   const counts = useMemo(() => {
@@ -105,19 +98,16 @@ function AppShell() {
     [emails, activeTab]
   );
 
-  const statusCounts = useMemo(() => {
-    return {
-      inbox: filteredByCategory.length,
-      bearbeitet: filteredByCategory.filter((e) => e.status === "bearbeitet").length,
-      in_bearbeitung: filteredByCategory.filter((e) => e.status === "in_bearbeitung").length,
-      action_required: filteredByCategory.filter((e) => e.status === "action_required").length,
-    };
-  }, [filteredByCategory]);
+  const statusCounts = useMemo(() => ({
+    inbox: filteredByCategory.length,
+    bearbeitet: filteredByCategory.filter((e) => e.status === "bearbeitet").length,
+    in_bearbeitung: filteredByCategory.filter((e) => e.status === "in_bearbeitung").length,
+    action_required: filteredByCategory.filter((e) => e.status === "action_required").length,
+  }), [filteredByCategory]);
 
-  const filtered = useMemo(() => {
-    if (statusTab === "inbox") return filteredByCategory;
-    return filteredByCategory.filter((m) => m.status === statusTab);
-  }, [filteredByCategory, statusTab]);
+  const filtered = useMemo(() => (
+    statusTab === "inbox" ? filteredByCategory : filteredByCategory.filter((m) => m.status === statusTab)
+  ), [filteredByCategory, statusTab]);
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -147,26 +137,24 @@ function AppShell() {
               <div className="p-4 text-center text-gray-600">Keine Einträge in dieser Kategorie / diesem Status.</div>
             )}
 
-            {!loading &&
-              filtered.map((email) => (
-                <FileItem
-                  key={email.id}
-                  email={email}
-                  selected={selected?.id === email.id}
-                  onClick={() => setSelected(email)}
-                  compact
-                />
-              ))}
+            {!loading && filtered.map((email) => (
+              <FileItem
+                key={email.id}
+                email={email}
+                selected={selected?.id === email.id}
+                onClick={() => setSelected(email)}
+                compact
+              />
+            ))}
           </div>
         </main>
-
         {selected && <DetailModal email={selected} onClose={() => setSelected(null)} />}
       </div>
     </div>
   );
 }
 
-// ---------- Oberste App mit Router + GlobalMenuProvider ----------
+// ---------- Oberste App OHNE BrowserRouter (der kommt in index.tsx) ----------
 export default function App() {
   const NotFoundRedirect = () => {
     const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
@@ -176,20 +164,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <GlobalMenuProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <AppShell />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NotFoundRedirect />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>} />
+          <Route path="*" element={<NotFoundRedirect />} />
+        </Routes>
       </GlobalMenuProvider>
     </ErrorBoundary>
   );
