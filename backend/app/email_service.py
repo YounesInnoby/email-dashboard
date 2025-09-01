@@ -25,7 +25,6 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 import ast
 
-client = OpenAI(api_key='SK_REDACTED')
 
 IMAP_SERVER = "mx.freenet.de"
 EMAIL_ACCOUNT = "rostfrei_demo@freenet.de"
